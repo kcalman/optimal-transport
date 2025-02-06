@@ -104,29 +104,39 @@ if __name__=="__main__":
     a,b = np.shape(x)  
     x = np.reshape(x, (b**2,))
     y = np.reshape(y, (b**2,))
+    
+
+    
     X = np.vstack([x,y]).T
 
+
+
     # y = np.reshape(x[:,0], (len(x[:,0]),1))
-    p = np.exp(-(y-3)**2- x**2 )
-    q = np.exp(-(y+3)**2 - x**2)
-    q = q/np.sum(q)
-    p = p/np.sum(p)
+    #p = np.exp(-(y-3)**2- (x-2)**2 )
+    #q = np.exp(-(y+3)**2 - (x+2)**2)
+    #q = q/np.sum(q)
+    #p = p/np.sum(p)
 
     # p = np.zeros((b**2,1)) # one point
     # q = np.zeros((b**2,1))
     # p[10] = 1
     # q[5] = 1
 
-    # p = np.zeros((b**2,1))
-    # p[int(b**2/2):-1] = 1
-    # p[-1] = 2/b**2
-    # q = np.zeros((b**2,1))
-    # q[0:int(b**2/2)] = 1
-    # p = p/p.sum()
-    # q = q/q.sum()
+    p = np.zeros((b**2,1))
+    p[int(b**2/2):-1] = 1
+    p[-1] = 2/b**2
+    q = np.zeros((b**2,1))
+    q[0:int(b**2/2)] = 1
+    p = p/p.sum()
+    q = q/q.sum()
  
     cost, T = demo_wasserstein(X,p,q)
-
+    
+    # add jitter (TODO: why does this break code when done before demo.wasserstein?)
+    # ONLY for visualization for now.
+    #x = x + 0.1*np.random.randn(b**2)
+    #y = y + 0.1*np.random.randn(b**2)
+    
     plt.scatter(x,y, c='blue', alpha=p/max(p))
     plt.scatter(x,y, c='red', alpha=q/max(q))
     #x = np.reshape( x, (a,b,c))
@@ -137,4 +147,15 @@ if __name__=="__main__":
     # for i in range(len(q)):
     #     r=np.ndarray.item(p[i])
     #     plt.plot(x[i,0], x[i,1], color=(.9,0,0), marker=".")
-    plt.show()
+    plt.show(block=False)
+    
+    # goal: draw little lines between every pair of points that 
+    # mass got moved between.
+    # T_ij is such that moving mass T[i,j] from position (x[i],y[i]) to (x[j],y[j])
+    for i in range(T.shape[0]):
+        for j in range(T.shape[1]):
+            if abs(T[i,j]) > 1e-3: #idk
+                _x = [ x[i], x[j] ]
+                _y = [ y[i], y[j] ]
+                plt.plot(_x, _y, lw=10*T[i,j],  c='k')
+    plt.show(block=False)
