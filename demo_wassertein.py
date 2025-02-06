@@ -101,33 +101,34 @@ if __name__=="__main__":
 
     x,y = np.meshgrid(x, x) # 2d
 
-    #a, b, c = np.shape(x)
     a,b = np.shape(x)  
     x = np.reshape(x, (b**2,))
     y = np.reshape(y, (b**2,))
     X = np.vstack([x,y]).T
 
     # y = np.reshape(x[:,0], (len(x[:,0]),1))
-    # p = np.exp(-(y-3)**2/25)
-    # p = p/np.sum(p)
-    # q = np.exp(-(y+3)**2/25)
-    # q = q/np.sum(q)
+    p = np.exp(-(y-3)**2- x**2 )
+    q = np.exp(-(y+3)**2 - x**2)
+    q = q/np.sum(q)
+    p = p/np.sum(p)
 
-    p = np.zeros((b**2,1)) # one point
-    q = np.zeros((b**2,1))
-    p[10] = 1
-    q[5] = 1
+    # p = np.zeros((b**2,1)) # one point
+    # q = np.zeros((b**2,1))
+    # p[10] = 1
+    # q[5] = 1
 
     # p = np.zeros((b**2,1))
-    # p[int(b**2/2):-1] = 2/b**2
+    # p[int(b**2/2):-1] = 1
     # p[-1] = 2/b**2
     # q = np.zeros((b**2,1))
-    # q[0:int(b**2/2)] = 2/b**2
+    # q[0:int(b**2/2)] = 1
+    # p = p/p.sum()
+    # q = q/q.sum()
  
     cost, T = demo_wasserstein(X,p,q)
 
-    plt.scatter(x,y, c='blue', alpha=p)
-    plt.scatter(x,y, c='red', alpha=q)
+    plt.scatter(x,y, c='blue', alpha=p/max(p))
+    plt.scatter(x,y, c='red', alpha=q/max(q))
     #x = np.reshape( x, (a,b,c))
     #for i in range(b):
     #    for j in range(b):
