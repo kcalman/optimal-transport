@@ -3,6 +3,8 @@ import pandas
 from matplotlib import pyplot as plt
 import numpy as np
 
+from sklearn import metrics
+
 # each row is an image vector length 28^2; can visualize by reshaping if needed.
 df = pandas.read_csv('data/train.csv') # Half the MNIST data.
 
@@ -22,3 +24,7 @@ fig.show()
 # connecting the images to go from vertex i to vertex j working off 
 # of the matrix T. (??????????)
 
+X = df.iloc[:100, 1:] # ignore column 0; take first 100 data points
+
+D = metrics.pairwise_distances(X)
+D[D> 3000] = np.inf
